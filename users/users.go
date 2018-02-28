@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 
 	"github.com/coreos/etcd/clientv3"
 	"github.com/imSQL/etcd/connections"
@@ -13,7 +14,7 @@ import (
 )
 
 type (
-	Users struct {
+	EtcdUsers struct {
 		// proxysql users
 		ProxysqlUsers proxysql.Users
 		// mysql users
@@ -21,7 +22,7 @@ type (
 	}
 )
 
-func (usr *Users) CreateOrUpdateOneUser(etcdcli *connections.EtcdCli, usr *Users) error {
+func (usr *EtcdUsers) CreateOrUpdateOneUser(etcdcli *connections.EtcdCli, cli *clientv3.Client) error {
 
 	// new users handler
 	newuser, err := proxysql.NewUser(usr.ProxysqlUsers.Username, usr.ProxysqlUsers.Password, usr.ProxysqlUsers.DefaultHostgroup, usr.ProxysqlUsers.DefaultSchema)
@@ -50,15 +51,16 @@ func (usr *Users) CreateOrUpdateOneUser(etcdcli *connections.EtcdCli, usr *Users
 	ctx, cancel := context.WithTimeout(context.Background(), etcdcli.RequestTimeout)
 
 	//create user at etcd
-	_, err = etcdcli.cli.Put(ctx, etcdcli.Root+"/"+encodeKey, encodeValue)
+	_, err = cli.Put(ctx, etcdcli.Root+"/"+encodeKey, encodeValue)
 	cancel()
 	if err != nil {
 		return errors.Trace(err)
 	}
 
+	return nil
 }
 
-func (usr *Users) DeleteOneUser(etcdcli *connections.EtcdCli, usr *Users) error {
+func (usr *EtcdUsers) DeleteOneUser(etcdcli *connections.EtcdCli, cli *clientv3.Client) error {
 	// new users handler
 	newuser, err := proxysql.NewUser(usr.ProxysqlUsers.Username, usr.ProxysqlUsers.Password, usr.ProxysqlUsers.DefaultHostgroup, usr.ProxysqlUsers.DefaultSchema)
 	if err != nil {
@@ -75,10 +77,10 @@ func (usr *Users) DeleteOneUser(etcdcli *connections.EtcdCli, usr *Users) error 
 	newuser.SetUseSSL(usr.ProxysqlUsers.UseSsl)
 
 	key := []byte(newuser.Username)
-	value, err := json.Marshal(newuser)
-	if err != nil {
-		return errors.Trace(err)
-	}
+	//value, err := json.Marshal(newuser)
+	//if err != nil {
+	//	return errors.Trace(err)
+	//}
 
 	encodeKey := base64.StdEncoding.EncodeToString(key)
 	//encodeValue := base64.StdEncoding.EncodeToString(value)
@@ -86,14 +88,28 @@ func (usr *Users) DeleteOneUser(etcdcli *connections.EtcdCli, usr *Users) error 
 	ctx, cancel := context.WithTimeout(context.Background(), etcdcli.RequestTimeout)
 
 	//create user at etcd
-	_, err = etcdcli.cli.Delete(ctx, etcdcli.Root+"/"+encodeKey, clientv3.WithPrefix())
+	_, err = cli.Delete(ctx, etcdcli.Root+"/"+encodeKey, clientv3.WithPrefix())
 	cancel()
 	if err != nil {
 		return errors.Trace(err)
 	}
 
+	return nil
+
 }
 
-func (usr *Users) QueryAllUsers() error {
+func QueryAllUsers(etcdcli *connections.EtcdCli, cli *clientv3.Client) ([]EtcdUsers, error) {
+	// new users handler
+	var allusers []EtcdUsers
 
+	ctx, cancel := context.WithTimeout(context.Background(), etcdcli.RequestTimeout)
+	resp, err := cli.Get(ctx, etcdcli.Root, clientv3.WithPrefix(), clientv3.WithSort(clientv3.SortByKey, clientv3.SortDescend))
+	cancel()
+	if err != nil {
+		return nil, errors.Trace(err)
+	}
+	for _, ev := range resp.Kvs {
+		fmt.Printf("%s : %s\n", ev.Key, ev.Value)
+	}
+	return allusers, nil
 }
