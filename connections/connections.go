@@ -26,6 +26,9 @@ type (
 		Key     string
 		Value   string
 
+		//cli
+		cli *clientv3.Client
+
 		//error
 		Err error
 	}
