@@ -45,7 +45,7 @@ func TestQueryAllQrs(t *testing.T) {
 
 	etcdcli.SetPrefix(etcd_prefix)
 	etcdcli.SetService(etcd_service)
-	etcdcli.SetEtcdType("users")
+	etcdcli.SetEtcdType("queryrules")
 
 	etcdcli.MakeWatchRoot()
 
@@ -67,7 +67,7 @@ func TestDeleteOneQr(t *testing.T) {
 
 	etcdcli.SetPrefix(etcd_prefix)
 	etcdcli.SetService(etcd_service)
-	etcdcli.SetEtcdType("users")
+	etcdcli.SetEtcdType("queryrules")
 
 	etcdcli.MakeWatchRoot()
 
