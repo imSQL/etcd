@@ -402,10 +402,19 @@ func (qr *EtcdQr) DeleteOneQr(etcdcli *EtcdCli, cli *clientv3.Client) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), etcdcli.RequestTimeout)
 	//create user at etcd
-	_, err := cli.Delete(ctx, etcdcli.Root+"/"+encodeKey, clientv3.WithPrefix())
+	response, err := cli.Delete(ctx, etcdcli.Root+"/"+encodeKey, clientv3.WithPrefix())
 	cancel()
 	if err != nil {
 		return errors.Trace(err)
+	}
+
+	orig_key, err := base64.StdEncoding.DecodeString(encodeKey)
+	if err != nil {
+		return errors.Trace(err)
+	}
+
+	if response.Deleted == 0 {
+		return errors.NotFoundf(string(orig_key))
 	}
 
 	return nil
