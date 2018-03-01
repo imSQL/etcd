@@ -1,14 +1,12 @@
 package etcd
 
 import (
+	"log"
 	"testing"
-
-	"github.com/imSQL/etcd/connections"
-	"github.com/imSQL/etcd/users"
 )
 
-func TestCreateOrUpdateOneUsers(t *testing.T) {
-	etcdcli := connections.NewEtcdCli([]string{etcd_points})
+func TestCreateOrUpdateOneUser(t *testing.T) {
+	etcdcli := NewEtcdCli([]string{etcd_points})
 
 	etcdcli.SetPrefix(etcd_prefix)
 	etcdcli.SetService(etcd_service)
@@ -21,8 +19,69 @@ func TestCreateOrUpdateOneUsers(t *testing.T) {
 		t.Error(err)
 	}
 
-	_, err = users.QueryAllUsers(etcdcli, cli)
+	newusr, err := NewUser("dev", "dev", 0, "dev")
 	if err != nil {
 		t.Error(err)
 	}
+
+	err = newusr.CreateOrUpdateOneUser(etcdcli, cli)
+	if err != nil {
+		t.Error(err)
+	}
+
+	newusr.SetMaxConnections(999)
+
+	err = newusr.CreateOrUpdateOneUser(etcdcli, cli)
+	if err != nil {
+		t.Error(err)
+	}
+
+}
+
+func TestQueryAllUsers(t *testing.T) {
+	etcdcli := NewEtcdCli([]string{etcd_points})
+
+	etcdcli.SetPrefix(etcd_prefix)
+	etcdcli.SetService(etcd_service)
+	etcdcli.SetEtcdType("users")
+
+	etcdcli.MakeWatchRoot()
+
+	cli, err := etcdcli.OpenEtcd()
+	if err != nil {
+		t.Error(err)
+	}
+
+	usrs, err := QueryAllUsers(etcdcli, cli)
+	if err != nil {
+		t.Error(err)
+	}
+
+	log.Println(usrs)
+}
+
+func TestDeleteOneUser(t *testing.T) {
+	etcdcli := NewEtcdCli([]string{etcd_points})
+
+	etcdcli.SetPrefix(etcd_prefix)
+	etcdcli.SetService(etcd_service)
+	etcdcli.SetEtcdType("users")
+
+	etcdcli.MakeWatchRoot()
+
+	cli, err := etcdcli.OpenEtcd()
+	if err != nil {
+		t.Error(err)
+	}
+
+	newusr, err := NewUser("dev", "dev", 0, "dev")
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = newusr.DeleteOneUser(etcdcli, cli)
+	if err != nil {
+		t.Error(err)
+	}
+
 }
