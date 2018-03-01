@@ -158,7 +158,7 @@ func (srvs *EtcdBackend) DeleteOneBackend(etcdcli *EtcdCli, cli *clientv3.Client
 }
 
 // query all backens informations.
-func (srvs *EtcdBackend) QueryAllBackends(etcdcli *EtcdCli, cli *clientv3.Client) ([]EtcdBackend, error) {
+func QueryAllBackends(etcdcli *EtcdCli, cli *clientv3.Client) ([]EtcdBackend, error) {
 
 	var allbkd []EtcdBackend
 

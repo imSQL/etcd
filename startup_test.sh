@@ -18,4 +18,8 @@ go test -timeout 30m -v -test.run TestDeleteOneUser
 go test -timeout 30m -v -test.run TestQueryAllUsers
 
 # servers
+go test -timeout 30m -v -test.run TestCreateOrUpdateOneBackend
+go test -timeout 30m -v -test.run TestQueryAllBackends
+go test -timeout 30m -v -test.run TestDeleteOneBackend
+go test -timeout 30m -v -test.run TestQueryAllBackends
 
