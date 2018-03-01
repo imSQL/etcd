@@ -23,3 +23,8 @@ go test -timeout 30m -v -test.run TestQueryAllBackends
 go test -timeout 30m -v -test.run TestDeleteOneBackend
 go test -timeout 30m -v -test.run TestQueryAllBackends
 
+# query rules
+go test -timeout 30m -v -test.run TestCreateOrUpdateOneQr
+go test -timeout 30m -v -test.run TestQueryAllQrs
+go test -timeout 30m -v -test.run TestDeleteOneQr
+go test -timeout 30m -v -test.run TestQueryAllQr
