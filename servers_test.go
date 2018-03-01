@@ -10,7 +10,7 @@ func TestCreateOrUpdateOneBackend(t *testing.T) {
 
 	etcdcli.SetPrefix(etcd_prefix)
 	etcdcli.SetService(etcd_service)
-	etcdcli.SetEtcdType("users")
+	etcdcli.SetEtcdType("servers")
 
 	etcdcli.MakeWatchRoot()
 
