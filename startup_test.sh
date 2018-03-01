@@ -28,3 +28,9 @@ go test -timeout 30m -v -test.run TestCreateOrUpdateOneQr
 go test -timeout 30m -v -test.run TestQueryAllQrs
 go test -timeout 30m -v -test.run TestDeleteOneQr
 go test -timeout 30m -v -test.run TestQueryAllQr
+
+# schedulers
+go test -timeout 30m -v -test.run TestCreateOrUpdateOneSchld
+go test -timeout 30m -v -test.run TestQueryAllSchlds
+go test -timeout 30m -v -test.run TestDeleteOneSchld
+go test -timeout 30m -v -test.run TestQueryAllSchld
