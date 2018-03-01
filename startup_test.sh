@@ -34,3 +34,9 @@ go test -timeout 30m -v -test.run TestCreateOrUpdateOneSchld
 go test -timeout 30m -v -test.run TestQueryAllSchlds
 go test -timeout 30m -v -test.run TestDeleteOneSchld
 go test -timeout 30m -v -test.run TestQueryAllSchld
+
+#rhg
+go test -timeout 30m -v -test.run TestCreateOrUpdateOneRHG
+go test -timeout 30m -v -test.run TestQueryAllRHG
+go test -timeout 30m -v -test.run TestDeleteOneRHG
+go test -timeout 30m -v -test.run TestQueryAllRHG
