@@ -40,3 +40,6 @@ go test -timeout 30m -v -test.run TestCreateOrUpdateOneRHG
 go test -timeout 30m -v -test.run TestQueryAllRHG
 go test -timeout 30m -v -test.run TestDeleteOneRHG
 go test -timeout 30m -v -test.run TestQueryAllRHG
+
+#variables
+go test -timeout 30m -v -test.run TestUpdateOneConfig

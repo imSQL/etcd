@@ -16,10 +16,13 @@ type (
 	}
 )
 
-func UpdateOneConfig(etcdcli *EtcdCli, cli *clientv3.Client, vars *EtcdVariables) error {
+func CreateOrUpdateOneConfig(etcdcli *EtcdCli, cli *clientv3.Client, vars *EtcdVariables) error {
 
 	key := []byte(vars.VariablesName)
-	value := []byte(vars.Value)
+	value, err := json.Marshal(vars)
+	if err != nil {
+		return errors.Trace(err)
+	}
 
 	// base64
 	encodeKey := base64.StdEncoding.EncodeToString(key)
@@ -27,7 +30,7 @@ func UpdateOneConfig(etcdcli *EtcdCli, cli *clientv3.Client, vars *EtcdVariables
 
 	ctx, cancel := context.WithTimeout(context.Background(), etcdcli.RequestTimeout)
 	//create user
-	_, err := cli.Put(ctx, etcdcli.Root+"/"+encodeKey, encodeValue)
+	_, err = cli.Put(ctx, etcdcli.Root+"/"+encodeKey, encodeValue)
 	cancel()
 	if err != nil {
 		return errors.Trace(err)
@@ -47,12 +50,14 @@ func QueryAllConfigs(etcdcli *EtcdCli, cli *clientv3.Client) ([]EtcdVariables, e
 		return nil, errors.Trace(err)
 	}
 	for _, ev := range resp.Kvs {
+
 		var tmpvar EtcdVariables
 		value, _ := base64.StdEncoding.DecodeString(string(ev.Value))
-		//decode user information.
+
 		if err := json.Unmarshal(value, &tmpvar); err != nil {
 			return nil, errors.Trace(err)
 		}
+
 		//merge user informations.
 		allvars = append(allvars, tmpvar)
 
