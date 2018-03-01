@@ -1,5 +1,15 @@
 package etcd
 
+import (
+	"context"
+	"encoding/base64"
+	"encoding/json"
+	"strconv"
+
+	"github.com/coreos/etcd/clientv3"
+	"github.com/juju/errors"
+)
+
 type (
 	EtcdBackend struct {
 		HostGroupId       uint64 `db:"hostgroup_id,omitempty" json:"hostgroup_id"`
@@ -97,4 +107,77 @@ func (srvs *EtcdBackend) SetServerMaxLatencyMs(max_latency_ms uint64) {
 // set servers comment
 func (srvs *EtcdBackend) SetServersComment(comment string) {
 	srvs.Comment = comment
+}
+
+// create or update a backend informations.
+func (srvs *EtcdBackend) CreateOrUpdateOneBackend(etcdcli *EtcdCli, cli *clientv3.Client) error {
+
+	key := []byte(strconv.Itoa(int(srvs.HostGroupId)) + "|" + srvs.HostName + "|" + strconv.Itoa(int(srvs.Port)))
+	value, err := json.Marshal(srvs)
+	if err != nil {
+		return errors.Trace(err)
+	}
+
+	encodeKey := base64.StdEncoding.EncodeToString(key)
+	encodeValue := base64.StdEncoding.EncodeToString(value)
+
+	ctx, cancel := context.WithTimeout(context.Background(), etcdcli.RequestTimeout)
+
+	//create user at etcd
+	_, err = cli.Put(ctx, etcdcli.Root+"/"+encodeKey, encodeValue)
+	cancel()
+	if err != nil {
+		return errors.Trace(err)
+	}
+
+	return nil
+}
+
+// delete a backend.
+func (srvs *EtcdBackend) DeleteOneBackend(etcdcli *EtcdCli, cli *clientv3.Client) error {
+
+	key := []byte(strconv.Itoa(int(srvs.HostGroupId)) + "|" + srvs.HostName + "|" + strconv.Itoa(int(srvs.Port)))
+	//value, err := json.Marshal(newuser)
+	//if err != nil {
+	//	return errors.Trace(err)
+	//}
+
+	encodeKey := base64.StdEncoding.EncodeToString(key)
+	//encodeValue := base64.StdEncoding.EncodeToString(value)
+
+	ctx, cancel := context.WithTimeout(context.Background(), etcdcli.RequestTimeout)
+
+	//create user at etcd
+	_, err := cli.Delete(ctx, etcdcli.Root+"/"+encodeKey, clientv3.WithPrefix())
+	cancel()
+	if err != nil {
+		return errors.Trace(err)
+	}
+
+	return nil
+}
+
+// query all backens informations.
+func (srvs *EtcdBackend) QueryAllBackends(etcdcli *EtcdCli, cli *clientv3.Client) ([]EtcdBackend, error) {
+
+	var allbkd []EtcdBackend
+
+	ctx, cancel := context.WithTimeout(context.Background(), etcdcli.RequestTimeout)
+	resp, err := cli.Get(ctx, etcdcli.Root, clientv3.WithPrefix(), clientv3.WithSort(clientv3.SortByKey, clientv3.SortDescend))
+	cancel()
+	if err != nil {
+		return nil, errors.Trace(err)
+	}
+	for _, ev := range resp.Kvs {
+		var tmpbkd EtcdBackend
+		value, _ := base64.StdEncoding.DecodeString(string(ev.Value))
+		//decode user information.
+		if err := json.Unmarshal(value, &tmpbkd); err != nil {
+			return nil, errors.Trace(err)
+		}
+		//merge user informations.
+		allbkd = append(allbkd, tmpbkd)
+
+	}
+	return allbkd, nil
 }
