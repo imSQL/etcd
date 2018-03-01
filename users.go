@@ -124,23 +124,8 @@ func (users *EtcdUsers) SetTransactionPersistent(transaction_persistent uint64) 
 
 func (usr *EtcdUsers) CreateOrUpdateOneUser(etcdcli *EtcdCli, cli *clientv3.Client) error {
 
-	// new users handler
-	newuser, err := NewUser(usr.Username, usr.Password, usr.DefaultHostgroup, usr.DefaultSchema)
-	if err != nil {
-		return errors.Trace(err)
-	}
-
-	newuser.SetUserActive(usr.Active)
-	newuser.SetFastForward(usr.FastForward)
-	newuser.SetBackend(usr.Backend)
-	newuser.SetFrontend(usr.Frontend)
-	newuser.SetMaxConnections(usr.MaxConnections)
-	newuser.SetSchemaLocked(usr.SchemaLocked)
-	newuser.SetTransactionPersistent(usr.TransactionPersistent)
-	newuser.SetUseSSL(usr.UseSsl)
-
-	key := []byte(newuser.Username)
-	value, err := json.Marshal(newuser)
+	key := []byte(usr.Username)
+	value, err := json.Marshal(usr)
 	if err != nil {
 		return errors.Trace(err)
 	}
