@@ -29,6 +29,12 @@ type (
 		//cli
 		cli *clientv3.Client
 
+		//proxysql connection informations.
+		ProxySQLAddr  string
+		ProxySQLPort  uint64
+		ProxySQLAdmin string
+		ProxySQLPass  string
+
 		//error
 		Err error
 	}
@@ -95,6 +101,23 @@ func (cli *EtcdCli) SetEtcdKey(key string) {
 // set etcd value
 func (cli *EtcdCli) SetEtcdValue(val string) {
 	cli.Value = val
+}
+
+// set proxysql dbi
+func (cli *EtcdCli) SetProxyAddr(proxy_addr string) {
+	cli.ProxySQLAddr = proxy_addr
+}
+
+func (cli *EtcdCli) SetProxyPort(proxy_port uint64) {
+	cli.ProxySQLPort = proxy_port
+}
+
+func (cli *EtcdCli) SetProxyAdmin(admin string) {
+	cli.ProxySQLAdmin = admin
+}
+
+func (cli *EtcdCli) SetProxyPass(pass string) {
+	cli.ProxySQLPass = pass
 }
 
 // prefix+service
