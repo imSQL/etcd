@@ -363,6 +363,19 @@ func (qr *EtcdQr) SetQrErrorMsg(error_msg string) {
 	}
 }
 
+// set qr log
+func (qr *EtcdQr) SetQrLog(log string) {
+	if log == "" || len(log) == 0 {
+		qr.Log = "NULL"
+	} else {
+		if strings.Index(log, "\"") == -1 {
+			qr.Log = fmt.Sprintf("\"%s\"", log)
+		} else {
+			qr.Log = log
+		}
+	}
+}
+
 // create or update a new queryrules
 func (qr *EtcdQr) CreateOrUpdateOneQr(etcdcli *EtcdCli, cli *clientv3.Client) error {
 
