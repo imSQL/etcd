@@ -10,7 +10,7 @@ func TestCreateOrUpdateOneRHG(t *testing.T) {
 
 	etcdcli.SetPrefix(etcd_prefix)
 	etcdcli.SetService(etcd_service)
-	etcdcli.SetEtcdType("rghs")
+	etcdcli.SetEtcdType("rhgs")
 
 	etcdcli.MakeWatchRoot()
 
@@ -44,7 +44,7 @@ func TestQueryAllRHG(t *testing.T) {
 
 	etcdcli.SetPrefix(etcd_prefix)
 	etcdcli.SetService(etcd_service)
-	etcdcli.SetEtcdType("rghs")
+	etcdcli.SetEtcdType("rhgs")
 
 	etcdcli.MakeWatchRoot()
 
@@ -66,7 +66,7 @@ func TestDeleteOneRHG(t *testing.T) {
 
 	etcdcli.SetPrefix(etcd_prefix)
 	etcdcli.SetService(etcd_service)
-	etcdcli.SetEtcdType("rghs")
+	etcdcli.SetEtcdType("rhgs")
 
 	etcdcli.MakeWatchRoot()
 
