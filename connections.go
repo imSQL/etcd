@@ -35,6 +35,12 @@ type (
 		ProxySQLAdmin string
 		ProxySQLPass  string
 
+		//mysql connection informations.
+		MySQLAddr string
+		MySQLPort uint64
+		MySQLUser string
+		MySQLPass string
+
 		//error
 		Err error
 	}
@@ -118,6 +124,23 @@ func (cli *EtcdCli) SetProxyAdmin(admin string) {
 
 func (cli *EtcdCli) SetProxyPass(pass string) {
 	cli.ProxySQLPass = pass
+}
+
+// set mysql dbi
+func (cli *EtcdCli) SetMySQLAddr(mysql_addr string) {
+	cli.MySQLAddr = mysql_addr
+}
+
+func (cli *EtcdCli) SetMySQLPort(mysql_port uint64) {
+	cli.MySQLPort = mysql_port
+}
+
+func (cli *EtcdCli) SetMySQLUser(mysql_user string) {
+	cli.MySQLUser = mysql_user
+}
+
+func (cli *EtcdCli) SetMySQLPass(mysql_pass string) {
+	cli.MySQLPass = mysql_pass
 }
 
 // prefix+service
