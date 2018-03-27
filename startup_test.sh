@@ -12,7 +12,9 @@ export ETCD_PREFIX="database"
 export ETCD_SVC="parauser"
 
 # users
-go test -timeout 30m -v -test.run TestCreateOrUpdateOneUser
+go test -timeout 30m -v -test.run TestCreateOneUser
+go test -timeout 30m -v -test.run TestQueryAllUsers
+go test -timeout 30m -v -test.run TestUpdateOneUser
 go test -timeout 30m -v -test.run TestQueryAllUsers
 go test -timeout 30m -v -test.run TestDeleteOneUser
 go test -timeout 30m -v -test.run TestQueryAllUsers

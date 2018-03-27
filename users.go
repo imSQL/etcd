@@ -11,18 +11,19 @@ import (
 
 type (
 	EtcdUsers struct {
-		Username              string `db:"username" json:"username"`
-		Password              string `db:"password" json:"password"`
-		Active                uint64 `db:"active" json:"active"`
-		UseSsl                uint64 `db:"use_ssl" json:"use_ssl"`
-		DefaultHostgroup      uint64 `db:"default_hostgroup" json:"default_hostgroup"`
-		DefaultSchema         string `db:"default_schema" json:"default_schema"`
-		SchemaLocked          uint64 `db:"schema_locked" json:"schema_locked"`
-		TransactionPersistent uint64 `db:"transaction_persistent" json:"transaction_persistent"`
-		FastForward           uint64 `db:"fast_forward" json:"fast_forward"`
-		Backend               uint64 `db:"backend" json:"backend"`
-		Frontend              uint64 `db:"frontend" json:"frontend"`
-		MaxConnections        uint64 `db:"max_connections" json:"max_connections"`
+		Username              string   `db:"username" json:"username"`
+		Password              string   `db:"password" json:"password"`
+		Active                uint64   `db:"active" json:"active"`
+		UseSsl                uint64   `db:"use_ssl" json:"use_ssl"`
+		DefaultHostgroup      uint64   `db:"default_hostgroup" json:"default_hostgroup"`
+		DefaultSchema         string   `db:"default_schema" json:"default_schema"`
+		SchemaLocked          uint64   `db:"schema_locked" json:"schema_locked"`
+		TransactionPersistent uint64   `db:"transaction_persistent" json:"transaction_persistent"`
+		FastForward           uint64   `db:"fast_forward" json:"fast_forward"`
+		Backend               uint64   `db:"backend" json:"backend"`
+		Frontend              uint64   `db:"frontend" json:"frontend"`
+		MaxConnections        uint64   `db:"max_connections" json:"max_connections"`
+		Privileges            []string `db:"privileges" json:"privileges"`
 	}
 )
 
@@ -43,6 +44,7 @@ func NewUser(username string, password string, default_hostgroup uint64, default
 	newuser.Backend = 1
 	newuser.Frontend = 1
 	newuser.MaxConnections = 10000
+	newuser.Privileges = []string{"ALL PRIVILEGES"}
 
 	return newuser, nil
 }
@@ -119,6 +121,18 @@ func (users *EtcdUsers) SetTransactionPersistent(transaction_persistent uint64) 
 		users.TransactionPersistent = 1
 	} else {
 		users.TransactionPersistent = 0
+	}
+}
+
+// set privileges
+func (users *EtcdUsers) AddPrivileges(privileges ...string) {
+	if len(privileges) != 0 {
+		if users.Privileges[0] == "ALL PRIVILEGES" {
+			users.Privileges = []string{}
+			users.Privileges = append(users.Privileges, privileges...)
+		} else {
+			users.Privileges = append(users.Privileges, privileges...)
+		}
 	}
 }
 

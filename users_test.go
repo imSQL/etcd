@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestCreateOrUpdateOneUser(t *testing.T) {
+func TestCreateOneUser(t *testing.T) {
 	etcdcli := NewEtcdCli([]string{etcd_points})
 
 	etcdcli.SetPrefix(etcd_prefix)
@@ -29,7 +29,29 @@ func TestCreateOrUpdateOneUser(t *testing.T) {
 		t.Error(err)
 	}
 
+}
+
+func TestUpdateOneUser(t *testing.T) {
+	etcdcli := NewEtcdCli([]string{etcd_points})
+
+	etcdcli.SetPrefix(etcd_prefix)
+	etcdcli.SetService(etcd_service)
+	etcdcli.SetEtcdType("users")
+
+	etcdcli.MakeWatchRoot()
+
+	cli, err := etcdcli.OpenEtcd()
+	if err != nil {
+		t.Error(err)
+	}
+
+	newusr, err := NewUser("dev", "dev", 0, "dev")
+	if err != nil {
+		t.Error(err)
+	}
+
 	newusr.SetMaxConnections(999)
+	newusr.AddPrivileges("SELECT")
 
 	err = newusr.CreateOrUpdateOneUser(etcdcli, cli)
 	if err != nil {
