@@ -24,6 +24,10 @@ type (
 		Frontend              uint64   `db:"frontend" json:"frontend"`
 		MaxConnections        uint64   `db:"max_connections" json:"max_connections"`
 		Privileges            []string `db:"privileges" json:"privileges"`
+		MaxQuestions          uint64   `json:"max_questions" db:"max_questions"`
+		MaxUpdates            uint64   `json:"max_updates" db:"max_updates"`
+		PasswordExpired       string   `json:"password_expired" db:"password_expired"`
+		PasswordLifetime      uint64   `json:"password_lifetime" db:"password_lifetime"`
 	}
 )
 
@@ -45,6 +49,10 @@ func NewUser(username string, password string, default_hostgroup uint64, default
 	newuser.Frontend = 1
 	newuser.MaxConnections = 10000
 	newuser.Privileges = []string{"ALL PRIVILEGES"}
+	newuser.MaxQuestions = 0
+	newuser.MaxUpdates = 0
+	newuser.PasswordExpired = "N"
+	newuser.PasswordLifetime = 0
 
 	return newuser, nil
 }
@@ -136,6 +144,64 @@ func (users *EtcdUsers) AddPrivileges(privileges ...string) {
 	}
 }
 
+/*
+set user password
+func (user *Users) SetPassword(password string) {
+	switch {
+	case password == "":
+		user.AuthenticationString = password
+	default:
+		user.AuthenticationString = password
+
+	}
+}
+*/
+
+/*
+SetMaxQuestions will set user max qps.
+*/
+func (users *EtcdUsers) SetMaxQuestions(max_questions uint64) {
+	users.MaxQuestions = max_questions
+}
+
+/*
+SetMaxUpdates will set user max updates.
+*/
+func (users *EtcdUsers) SetMaxUpdates(max_updates uint64) {
+	users.MaxUpdates = max_updates
+}
+
+/*
+set max user connections.
+func (users *EtcdUsers) SetMaxUserConections(max_user_connections uint64) {
+	users.MaxUserConnections = max_user_connections
+}
+*/
+
+/*
+set user password life time.
+*/
+func (users *EtcdUsers) SetPasswordLifeTime(password_lifetime uint64) {
+	users.PasswordLifetime = password_lifetime
+}
+
+/*
+enable/disable user password expired.
+*/
+func (users *EtcdUsers) SetPasswordExipred(password_expired string) {
+	users.PasswordExpired = password_expired
+}
+
+/*
+lock/unlock user account.
+func (users *EtcdUsers) SetAccountLocked(account_locked string) {
+	users.AccountLocked = account_locked
+}
+*/
+
+/*
+create a new user.
+*/
 func (usr *EtcdUsers) CreateOrUpdateOneUser(etcdcli *EtcdCli, cli *clientv3.Client) error {
 
 	key := []byte(usr.Username)
