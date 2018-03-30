@@ -12,36 +12,21 @@ export ETCD_PREFIX="database"
 export ETCD_SVC="parauser"
 
 # users
-go test -timeout 30m -v -test.run TestCreateOneUser
-go test -timeout 30m -v -test.run TestQueryAllUsers
-go test -timeout 30m -v -test.run TestUpdateOneUser
-go test -timeout 30m -v -test.run TestQueryAllUsers
 go test -timeout 30m -v -test.run TestDeleteOneUser
 go test -timeout 30m -v -test.run TestQueryAllUsers
 
 # servers
-go test -timeout 30m -v -test.run TestCreateOrUpdateOneBackend
-go test -timeout 30m -v -test.run TestQueryAllBackends
 go test -timeout 30m -v -test.run TestDeleteOneBackend
 go test -timeout 30m -v -test.run TestQueryAllBackends
 
 # query rules
-go test -timeout 30m -v -test.run TestCreateOrUpdateOneQr
-go test -timeout 30m -v -test.run TestQueryAllQrs
 go test -timeout 30m -v -test.run TestDeleteOneQr
 go test -timeout 30m -v -test.run TestQueryAllQr
 
 # schedulers
-go test -timeout 30m -v -test.run TestCreateOrUpdateOneSchld
-go test -timeout 30m -v -test.run TestQueryAllSchlds
 go test -timeout 30m -v -test.run TestDeleteOneSchld
 go test -timeout 30m -v -test.run TestQueryAllSchld
 
 #rhg
-go test -timeout 30m -v -test.run TestCreateOrUpdateOneRHG
-go test -timeout 30m -v -test.run TestQueryAllRHG
 go test -timeout 30m -v -test.run TestDeleteOneRHG
 go test -timeout 30m -v -test.run TestQueryAllRHG
-
-#variables
-go test -timeout 30m -v -test.run TestUpdateOneConfig

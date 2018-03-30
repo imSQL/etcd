@@ -19,7 +19,7 @@ func TestCreateOrUpdateOneBackend(t *testing.T) {
 		t.Error(err)
 	}
 
-	newbkd, err := NewServer(0, "127.0.0.1", 6032)
+	newbkd, err := NewServer(0, "127.0.0.1", 3309)
 	if err != nil {
 		t.Error(err)
 	}
@@ -74,7 +74,7 @@ func TestDeleteOneBackend(t *testing.T) {
 		t.Error(err)
 	}
 
-	newbkd, err := NewServer(0, "127.0.0.1", 6032)
+	newbkd, err := NewServer(0, "127.0.0.1", 3309)
 	if err != nil {
 		t.Error(err)
 	}

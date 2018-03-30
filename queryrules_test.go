@@ -35,11 +35,15 @@ func TestCreateOrUpdateOneQr(t *testing.T) {
 	}
 
 	newqr.SetQrRuleid(999)
+	newqr.SetQrSchemaname("dev")
+	newqr.SetQrDestHostGroup("0")
 	newqr.SetQrLog("0")
 	newqr.SetQrDigest("^SELECT")
 	newqr.SetQrCacheTTL("100")
 	newqr.SetQrReconnect("0")
 	newqr.SetQrRetries("5")
+	newqr.SetQrActive(1)
+	newqr.SetQrApply(1)
 
 	err = newqr.CreateOrUpdateOneQr(etcdcli, cli)
 	if err != nil {
